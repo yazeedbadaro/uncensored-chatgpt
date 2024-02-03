@@ -81,8 +81,8 @@ def start_generation(queue, query):
     thread = Thread(target=model.generate, kwargs=generation_kwargs)
     thread.start()
 
-async def response_generator(queue, query):
-    text=""
+async def response_generator(queue, query,chat_id: UUID1 , db=Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    text="<|im_start|>assistant\n"
     start_generation(queue, query)
 
     while True:
@@ -92,3 +92,6 @@ async def response_generator(queue, query):
         text+=value
         yield value
         queue.task_done()
+        
+    text+="<|im_end|>\n"
+    await insert_content(chat_id=chat_id,content=text,role="bot",n_tokens=len(tokenizer(text,add_special_tokens=False)["input_ids"]),current_user = current_user,db=db)
