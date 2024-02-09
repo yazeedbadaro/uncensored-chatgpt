@@ -24,8 +24,8 @@ async def get_content(chat_id: UUID1 ,db=Depends(get_db), current_user: int = De
      WHERE
          u.user_id = UUID_TO_BIN(%s)
          AND 
-         c.chat_id = UUID_TO_BIN(%s);
-    ORDER BY c.created_at
+         c.chat_id = UUID_TO_BIN(%s)
+    ORDER BY c.created_at;
         """
     result = await execute_query(query,(current_user["id"],chat_id),db=db)
     if not result:

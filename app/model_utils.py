@@ -71,13 +71,12 @@ async def insert_content(chat_id: UUID1,content,role,n_tokens,current_user: int 
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT, detail="Chat not found")
 
 def start_generation(queue, query):
-    prompt=""
     
-    inputs = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to("cuda")
+    inputs = tokenizer(query, return_tensors="pt", add_special_tokens=False).to("cuda")
     streamer_queue = queue
     streamer = CustomStreamer(streamer_queue, tokenizer, True)
 
-    generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=32000)
+    generation_kwargs = dict(**inputs, streamer=streamer, max_new_tokens=32000)
     thread = Thread(target=model.generate, kwargs=generation_kwargs)
     thread.start()
 

@@ -25,4 +25,4 @@ async def stream(prompt:UserInput,chat_id: UUID1 ,db=Depends(get_db), current_us
     
     print(f'Query received: {prompt.prompt}')
     
-    return StreamingResponse(response_generator(context,streamer_queue,chat_id,db,current_user), media_type='text/event-stream')
+    return StreamingResponse(response_generator(streamer_queue,context,chat_id,db,current_user), media_type='text/event-stream')
